@@ -12,7 +12,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
+	
 @Entity
 @Table(name = "quiz")
 @Getter
@@ -26,7 +26,7 @@ public class QuizEntity {
 	
 	String title;
 	String description;
-	LocalDateTime createdAt=LocalDateTime.now();;
+	LocalDateTime createdAt=LocalDateTime.now();
 	Boolean active;
 
 }
