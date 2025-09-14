@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class QuizAnswerController {
     @Autowired
     QuizQuestionRepository quizQuestionRepo;
 
+    // User submits answer for a question
     @PostMapping("/submitQuizAnswer")
     public String submitQuizAnswer(@RequestBody QuizAnswerEntity answer) {
 
@@ -31,30 +33,42 @@ public class QuizAnswerController {
 
         QuizQuestionEntity question = questionOpt.get();
 
-        // Set correct answer
+        // Set quizId from the question
+        answer.setQuizId(question.getQuizId());
+
+        // Always set correct answer from question
         String correctAns = question.getCorrectAns();
         answer.setCorrectAns(correctAns);
 
-        // Set status
-        if (answer.getSelectAns() != null && answer.getSelectAns().equals(correctAns)) {
-            answer.setStatus(correctAns);
+        // Compare user's answer with correct answer
+        if (answer.getSelectAns() != null && answer.getSelectAns().equalsIgnoreCase(correctAns)) {
+            answer.setStatus("correct");
         } else {
             answer.setStatus("wrong");
         }
 
-        // **Set quizId from the question**
-        answer.setQuizId(question.getQuizId());
-
-        // Save answer
+        // Save to DB
         quizAnswerRepo.save(answer);
 
         return "Answer submitted successfully!";
     }
 
-
+    // Fetch all answers of a user for a quiz
     @GetMapping("/getUserQuizAnswers/{quizId}/{userId}")
-    public java.util.List<QuizAnswerEntity> getUserQuizAnswers(@PathVariable Integer quizId,
-                                                               @PathVariable Integer userId) {
+    public List<QuizAnswerEntity> getUserQuizAnswers(@PathVariable Integer quizId,
+                                                     @PathVariable Integer userId) {
         return quizAnswerRepo.findByQuizIdAndUserId(quizId, userId);
+    }
+
+    // Fetch user score (extra useful for result screen)
+    @GetMapping("/getUserQuizResult/{quizId}/{userId}")
+    public String getUserQuizResult(@PathVariable Integer quizId,
+                                    @PathVariable Integer userId) {
+        List<QuizAnswerEntity> answers = quizAnswerRepo.findByQuizIdAndUserId(quizId, userId);
+
+        long correctCount = answers.stream().filter(a -> "correct".equals(a.getStatus())).count();
+        long totalQuestions = answers.size();
+
+        return "You scored " + correctCount + " out of " + totalQuestions;
     }
 }
