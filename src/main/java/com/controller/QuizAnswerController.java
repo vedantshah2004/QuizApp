@@ -71,4 +71,5 @@ public class QuizAnswerController {
 
         return "You scored " + correctCount + " out of " + totalQuestions;
     }
+
 }
