@@ -24,12 +24,7 @@ public class QuizController {
 	@Autowired QuizRepository quizrepo;
 
 	
-	@PostMapping("addQuiz")
-	public String addQuiz(@RequestBody QuizEntity quizentity)
-	{
-		quizrepo.save(quizentity);
-		return "Quiz added";
-	}
+
 	
 	@PostMapping("updateQuiz/{quizId}")
 	public String updateQuiz(@PathVariable Integer quizId, @RequestBody QuizEntity updatequiz)
