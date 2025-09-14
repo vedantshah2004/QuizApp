@@ -62,14 +62,20 @@ public class QuizAnswerController {
 
     // Fetch user score (extra useful for result screen)
     @GetMapping("/getUserQuizResult/{quizId}/{userId}")
-    public String getUserQuizResult(@PathVariable Integer quizId,
-                                    @PathVariable Integer userId) {
+    public java.util.Map<String, Object> getUserQuizResult(@PathVariable Integer quizId,
+                                                           @PathVariable Integer userId) {
         List<QuizAnswerEntity> answers = quizAnswerRepo.findByQuizIdAndUserId(quizId, userId);
 
         long correctCount = answers.stream().filter(a -> "correct".equals(a.getStatus())).count();
         long totalQuestions = answers.size();
 
-        return "You scored " + correctCount + " out of " + totalQuestions;
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        result.put("correct", correctCount);
+        result.put("total", totalQuestions);
+        result.put("percentage", totalQuestions > 0 ? (correctCount * 100 / totalQuestions) : 0);
+
+        return result;
     }
+
 
 }
