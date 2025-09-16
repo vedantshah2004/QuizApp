@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.entity.UserEntity;
 import com.repository.UserRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 public class UserController{
 
@@ -22,6 +24,7 @@ public class UserController{
         userepo.save(user);
         return "signup done as " + user.getRole();
     }
+	
 	
 	 @PostMapping("login")
 	 public String login(@RequestBody UserEntity loginRequest) 
@@ -44,6 +47,16 @@ public class UserController{
 		 return "invalid email or password";
 	 	}
 	 }
+	 
+	 
+	 
+	 
+	 @PostMapping("logout")
+	    public String logout(HttpSession session) {
+	        // Invalidate the session to log out
+	        session.invalidate();
+	        return "logout successful";
+	    }
 }
 
 	
