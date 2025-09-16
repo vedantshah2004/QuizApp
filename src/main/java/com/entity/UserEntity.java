@@ -28,4 +28,7 @@ public class UserEntity {
 	
 	String password;
 	
+	@Column(nullable = false)
+	String role = "USER";   // Default value
+	
 }

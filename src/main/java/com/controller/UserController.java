@@ -14,22 +14,36 @@ public class UserController{
 	@Autowired UserRepository userepo;
 	
 	@PostMapping("signup")
-	public String SignUp(@RequestBody UserEntity user)
-	{
-		userepo.save(user);
-		return "signup done";
-	}
-	
-	@PostMapping("login")
-    public String login(@RequestBody UserEntity loginRequest) {
-        UserEntity user = userepo.findByEmail(loginRequest.getEmail());
-
-        if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
-            return "login success";
-        } else {
-            return "invalid email or password";
+    public String SignUp(@RequestBody UserEntity user) {
+        // Ensure default role
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
         }
+        userepo.save(user);
+        return "signup done as " + user.getRole();
     }
+	
+	 @PostMapping("login")
+	 public String login(@RequestBody UserEntity loginRequest) 
+	 {
+		 UserEntity user = userepo.findByEmail(loginRequest.getEmail());
+	 	if (user != null && user.getPassword().equals(loginRequest.getPassword()))
+	 	{
+	     	if ("ADMIN".equalsIgnoreCase(user.getRole()))
+	     	{
+	    	 return "login success - redirect to admin dashboard";
+	      	} 
+	     	else
+	     	{
+	           return "login success - redirect to user dashboard";
+	      	}
+	 	}
+	 
+	 	else 
+	 	{
+		 return "invalid email or password";
+	 	}
+	 }
+}
 
 	
-}
