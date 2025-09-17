@@ -68,14 +68,22 @@ public class QuizAnswerController {
 
         long correctCount = answers.stream().filter(a -> "correct".equals(a.getStatus())).count();
         long totalQuestions = answers.size();
+        long wrongCount = totalQuestions - correctCount;
 
         java.util.Map<String, Object> result = new java.util.HashMap<>();
         result.put("correct", correctCount);
+        result.put("wrong", wrongCount);   // ✅ new
         result.put("total", totalQuestions);
         result.put("percentage", totalQuestions > 0 ? (correctCount * 100 / totalQuestions) : 0);
 
         return result;
     }
+
+    
+    
+    
+    
+    
 
 
 }
