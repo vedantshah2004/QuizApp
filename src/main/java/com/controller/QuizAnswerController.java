@@ -66,18 +66,22 @@ public class QuizAnswerController {
                                                            @PathVariable Integer userId) {
         List<QuizAnswerEntity> answers = quizAnswerRepo.findByQuizIdAndUserId(quizId, userId);
 
-        long correctCount = answers.stream().filter(a -> "correct".equals(a.getStatus())).count();
+        long correctCount = answers.stream()
+                .filter(a -> a.getStatus() != null && a.getStatus().equalsIgnoreCase("correct"))
+                .count();
+
         long totalQuestions = answers.size();
         long wrongCount = totalQuestions - correctCount;
 
         java.util.Map<String, Object> result = new java.util.HashMap<>();
         result.put("correct", correctCount);
-        result.put("wrong", wrongCount);   // ✅ new
+        result.put("wrong", wrongCount);
         result.put("total", totalQuestions);
         result.put("percentage", totalQuestions > 0 ? (correctCount * 100 / totalQuestions) : 0);
 
         return result;
     }
+
 
     
     
